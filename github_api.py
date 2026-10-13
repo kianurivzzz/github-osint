@@ -22,3 +22,22 @@ def get_profile(login, token):
         "blog": data.get("blog"),
         "created_at": data["created_at"],
     }
+
+
+def get_repos(login, token):
+    data = _get(f"/users/{login}/repos", token, params={"per_page": 100, "sort": "updated"})
+    return [repo["name"] for repo in data if not repo["fork"]]
+
+
+def get_commit_emails(login, repos, token):
+    emails = set()
+    for repo in repos:
+        try:
+            commits = _get(f"/repos/{login}/{repo}/commits", token, params={"author": login, "per_page": 30})
+        except requests.HTTPError:
+            continue
+        for commit in commits:
+            email = commit["commit"]["author"]["email"]
+            if not email.endswith("@users.noreply.github.com"):
+                emails.add(email)
+    return sorted(emails)
