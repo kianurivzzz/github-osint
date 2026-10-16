@@ -3,17 +3,24 @@ import requests
 API_URL = "https://api.github.com"
 
 
-def _get(path, token, params=None):
+def _get(path, token, proxy=None, params=None):
     headers = {"Accept": "application/vnd.github+json"}
     if token:
         headers["Authorization"] = f"Bearer {token}"
-    response = requests.get(f"{API_URL}{path}", headers=headers, params=params, timeout=10)
+    proxies = {"http": proxy, "https": proxy} if proxy else None
+    response = requests.get(
+        f"{API_URL}{path}",
+        headers=headers,
+        params=params,
+        proxies=proxies,
+        timeout=10,
+    )
     response.raise_for_status()
     return response.json()
 
 
-def get_profile(login, token):
-    data = _get(f"/users/{login}", token)
+def get_profile(login, token, proxy=None):
+    data = _get(f"/users/{login}", token, proxy)
     return {
         "login": data["login"],
         "name": data.get("name"),
@@ -24,16 +31,16 @@ def get_profile(login, token):
     }
 
 
-def get_repos(login, token):
-    data = _get(f"/users/{login}/repos", token, params={"per_page": 100, "sort": "updated"})
+def get_repos(login, token, proxy=None):
+    data = _get(f"/users/{login}/repos", token, proxy, params={"per_page": 100, "sort": "updated"})
     return [repo["name"] for repo in data if not repo["fork"]]
 
 
-def get_commit_emails(login, repos, token):
+def get_commit_emails(login, repos, token, proxy=None):
     emails = set()
     for repo in repos:
         try:
-            commits = _get(f"/repos/{login}/{repo}/commits", token, params={"author": login, "per_page": 30})
+            commits = _get(f"/repos/{login}/{repo}/commits", token, proxy, params={"author": login, "per_page": 30})
         except requests.HTTPError:
             continue
         for commit in commits:

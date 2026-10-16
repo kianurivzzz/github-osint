@@ -10,11 +10,13 @@ def main():
         print("Использование: python main.py <логин>")
         sys.exit(1)
     login = sys.argv[1]
-    profile = get_profile(login, config.GITHUB_TOKEN)
-    repos = get_repos(login, config.GITHUB_TOKEN)
-    emails = get_commit_emails(login, repos, config.GITHUB_TOKEN)
+    token = config.GITHUB_TOKEN
+    proxy = config.PROXY_URL
+    profile = get_profile(login, token, proxy)
+    repos = get_repos(login, token, proxy)
+    emails = get_commit_emails(login, repos, token, proxy)
     report = build_report(profile, repos, emails)
-    send_message(report, config.TELEGRAM_BOT_TOKEN, config.TELEGRAM_CHAT_ID)
+    send_message(report, config.TELEGRAM_BOT_TOKEN, config.TELEGRAM_CHAT_ID, proxy)
     print("Сводка отправлена")
 
 

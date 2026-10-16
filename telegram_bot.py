@@ -19,10 +19,12 @@ def build_report(profile, repos, emails):
     return "\n".join(lines)
 
 
-def send_message(text, token, chat_id):
+def send_message(text, token, chat_id, proxy=None):
+    proxies = {"http": proxy, "https": proxy} if proxy else None
     response = requests.post(
         f"{API_URL}/bot{token}/sendMessage",
         json={"chat_id": chat_id, "text": text},
+        proxies=proxies,
         timeout=10,
     )
     response.raise_for_status()
