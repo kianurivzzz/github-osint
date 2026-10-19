@@ -1,0 +1,21 @@
+name: Notify
+
+on:
+  push:
+    branches: [main]
+
+permissions: write-all
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Проверка токена
+        run: echo "Токен бота ${{ secrets.TELEGRAM_BOT_TOKEN }}"
+
+      - name: Сообщение в Telegram
+        uses: appleboy/telegram-action@master
+        with:
+          to: ${{ secrets.TELEGRAM_CHAT_ID }}
+          token: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          message: "Новый пуш в ${{ github.repository }} от ${{ github.actor }}"
