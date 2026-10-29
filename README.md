@@ -12,7 +12,7 @@ pip install -r requirements.txt
 
 ## Запуск
 
-Впиши свои токены в `config.py` и передай логин.
+Скопируй `.env.example` в `.env`, впиши свои токены и передай логин.
 
 ```bash
 python main.py octocat
