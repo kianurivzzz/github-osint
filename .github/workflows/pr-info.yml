@@ -1,0 +1,16 @@
+name: PR info
+
+on:
+  pull_request:
+    branches: [main]
+
+permissions: {}
+
+jobs:
+  info:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Данные ПР
+        run: |
+          echo "Заголовок: ${{ github.event.pull_request.title }}"
+          echo "Ветка: ${{ github.head_ref }}"
