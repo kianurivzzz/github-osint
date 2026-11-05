@@ -11,6 +11,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Данные ПР
+        env:
+          PR_TITLE: ${{ github.event.pull_request.title }}
+          PR_BRANCH: ${{ github.head_ref }}
         run: |
-          echo "Заголовок: ${{ github.event.pull_request.title }}"
-          echo "Ветка: ${{ github.head_ref }}"
+          echo "Заголовок: $PR_TITLE"
+          echo "Ветка: $PR_BRANCH"
